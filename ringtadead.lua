@@ -67,7 +67,6 @@ DiscordBox.TextEditable = false -- Non-editable, but selectable/copyable
 DiscordBox.ClearTextOnFocus = false
 DiscordBox.CursorPosition = -1 -- Hide text cursor
 
--- Optional: Click to copy Discord link if setclipboard available (exploit only)
 DiscordBox.MouseButton1Click:Connect(function()
     if setclipboard then
         setclipboard("discord.gg/ringta")
