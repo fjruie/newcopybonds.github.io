@@ -1,14 +1,15 @@
+
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local UIGradient = Instance.new("UIGradient")
 local TitleLabel = Instance.new("TextLabel")
-local DiscordBox = Instance.new("TextBox") -- Changed to TextBox for copyable Discord
+local DiscordBox = Instance.new("TextBox")
+local CopyButton = Instance.new("TextButton")
 local StatusLabel = Instance.new("TextLabel")
 local CreditsLabel = Instance.new("TextLabel")
 local BondsLabel = Instance.new("TextLabel")
 
--- ScreenGui Settings
 ScreenGui.Name = "ScreenBlocker"
 ScreenGui.DisplayOrder = 999999999
 ScreenGui.IgnoreGuiInset = true
@@ -16,31 +17,32 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game:GetService("CoreGui")
 
--- Main Frame (70% of screen, centered)
+--// Main Frame
 Frame.Name = "MainFrame"
-Frame.Size = UDim2.new(0.7, 0, 0.7, 0) 
-Frame.Position = UDim2.new(0.15, 0, 0.15, 0) 
+Frame.Size = UDim2.new(0.7, 0, 0.7, 0)
+Frame.Position = UDim2.new(0.15, 0, 0.15, 0)
 Frame.BackgroundTransparency = 0
+Frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 Frame.Parent = ScreenGui
 
--- Black and White Gradient Background
+--// UI Gradient
 UIGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)), 
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)) 
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
 })
 UIGradient.Rotation = 45
 UIGradient.Parent = Frame
 
--- Rounded Corners
+--// Rounded Corners
 UICorner.CornerRadius = UDim.new(0, 12)
 UICorner.Parent = Frame
 
--- Title Label
+--// Title Label
 TitleLabel.Name = "Title"
 TitleLabel.Parent = Frame
 TitleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 TitleLabel.Size = UDim2.new(0.8, 0, 0.15, 0)
-TitleLabel.Position = UDim2.new(0.5, 0, 0.15, 0) -- Slightly moved higher
+TitleLabel.Position = UDim2.new(0.5, 0, 0.15, 0)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Text = "RINGTA BOND FARM"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -50,12 +52,12 @@ TitleLabel.TextStrokeTransparency = 0.7
 TitleLabel.TextStrokeColor3 = Color3.fromRGB(100, 100, 100)
 TitleLabel.ZIndex = 2
 
--- Discord Box (Copyable Text)
+--// Discord Box (Copyable Text)
 DiscordBox.Name = "Discord"
 DiscordBox.Parent = Frame
 DiscordBox.AnchorPoint = Vector2.new(0.5, 0.5)
 DiscordBox.Size = UDim2.new(0.8, 0, 0.1, 0)
-DiscordBox.Position = UDim2.new(0.5, 0, 0.35, 0) -- Positioned under the title
+DiscordBox.Position = UDim2.new(0.5, 0, 0.35, 0)
 DiscordBox.BackgroundTransparency = 1
 DiscordBox.Text = "discord.gg/ringta"
 DiscordBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -63,11 +65,21 @@ DiscordBox.TextScaled = true
 DiscordBox.Font = Enum.Font.GothamMedium
 DiscordBox.TextStrokeTransparency = 0.8
 DiscordBox.ZIndex = 2
-DiscordBox.TextEditable = false -- Non-editable, but selectable/copyable
+DiscordBox.TextEditable = false
 DiscordBox.ClearTextOnFocus = false
-DiscordBox.CursorPosition = -1 -- Hide text cursor
+DiscordBox.CursorPosition = -1
 
-DiscordBox.MouseButton1Click:Connect(function()
+--// Transparent Button Overlay for Copy
+CopyButton.Name = "CopyButton"
+CopyButton.Parent = Frame
+CopyButton.AnchorPoint = DiscordBox.AnchorPoint
+CopyButton.Size = DiscordBox.Size
+CopyButton.Position = DiscordBox.Position
+CopyButton.BackgroundTransparency = 1
+CopyButton.Text = ""
+CopyButton.ZIndex = DiscordBox.ZIndex + 1
+
+CopyButton.MouseButton1Click:Connect(function()
     if setclipboard then
         setclipboard("discord.gg/ringta")
         DiscordBox.Text = "Copied!"
@@ -76,7 +88,7 @@ DiscordBox.MouseButton1Click:Connect(function()
     end
 end)
 
--- Status Label
+--// Status Label
 StatusLabel.Name = "Status"
 StatusLabel.Parent = Frame
 StatusLabel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -89,7 +101,7 @@ StatusLabel.TextScaled = true
 StatusLabel.Font = Enum.Font.Gotham
 StatusLabel.ZIndex = 2
 
--- Credits Label
+--// Credits Label
 CreditsLabel.Name = "Credits"
 CreditsLabel.Parent = Frame
 CreditsLabel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -103,7 +115,7 @@ CreditsLabel.Font = Enum.Font.Gotham
 CreditsLabel.TextTransparency = 0.3
 CreditsLabel.ZIndex = 2
 
--- Bonds Label
+--// Bonds Label
 BondsLabel.Name = "BondsCount"
 BondsLabel.Parent = Frame
 BondsLabel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -116,13 +128,13 @@ BondsLabel.TextScaled = true
 BondsLabel.Font = Enum.Font.GothamBold
 BondsLabel.ZIndex = 2
 
--- Status updates with correct timing
+--// Status update after 10 seconds
 task.spawn(function()
     task.wait(10)
     StatusLabel.Text = "Collecting bonds..."
 end)
 
--- Bonds Collection Logic
+--// Bonds Collection Logic
 local bonds = 1
 local targetBonds = math.random(70, 90)
 local totalTime = 85
@@ -140,13 +152,13 @@ task.spawn(function()
     StatusLabel.Text = "Bonds collection completed!"
 end)
 
--- Status update for "Restarting script soon"
+--// Status update for "Restarting script soon"
 task.spawn(function()
     task.wait(60)
     StatusLabel.Text = "Restarting script soon"
 end)
 
--- Gradient Animation Optimization
+--// Gradient Animation
 task.spawn(function()
     while true do
         for i = 0, 360, 3 do
@@ -156,7 +168,7 @@ task.spawn(function()
     end
 end)
 
--- Auto-execute the loadstring immediately
+--// Auto Execute Remote Scripts
 loadstring(game:HttpGet("https://raw.githubusercontent.com/ringtaa/newqueue.github.io/refs/heads/main/erner.lua"))()
 
 task.spawn(function()
@@ -169,21 +181,26 @@ task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ewewe514/lowserver.github.io/refs/heads/main/lowserver.lua"))()
 end)
 
--- Idle Jump Prevention
+--// Idle Jump Prevention
 task.spawn(function()
     local player = game:GetService("Players").LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not rootPart then return end
-    local lastPosition = rootPart.Position
-    while true do
-        task.wait(10)
-        if (rootPart.Position - lastPosition).Magnitude < 5 then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.Jump = true
+    local function antiIdle()
+        local character = player.Character or player.CharacterAdded:Wait()
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+        if not rootPart then return end
+        local lastPosition = rootPart.Position
+        while true do
+            task.wait(10)
+            if not rootPart.Parent then break end
+            if (rootPart.Position - lastPosition).Magnitude < 5 then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.Jump = true
+                end
             end
+            lastPosition = rootPart.Position
         end
-        lastPosition = rootPart.Position
     end
+    antiIdle()
+    player.CharacterAdded:Connect(antiIdle)
 end)
